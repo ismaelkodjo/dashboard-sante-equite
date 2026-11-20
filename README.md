@@ -1,7 +1,5 @@
 # Prévalence de l'hypertension en Afrique de l'Ouest : un tableau de bord interactif
 
-
-
 **Application en ligne :  https://dashboard-sante-equite-c5cwxkfwypb98jmsxbh9nc.streamlit.app/**
 
 > \*\*English summary.\*\* Interactive dashboard (Streamlit + Plotly) on one indicator: hypertension prevalence among
@@ -85,7 +83,7 @@ diminution, en points de pourcentage). Femmes et hommes ont chacun leur couleur 
 1. **Vue d'ensemble.** Carte avec échelle de couleurs et classement des pays ; les couleurs tiennent compte du fait
 qu'une prévalence élevée est défavorable.
 2. **Tendances.** Courbes par pays et variation entre la première et la dernière année.
-3. **Femmes et hommes.** Évolution par sexe en moyenne, puis pays par pays (barres tous les 5 ans), et écart
+3. **Femmes et hommes.** Évolution par sexe en moyenne, puis pays par pays (courbes avec zone d'écart), et écart
 femmes − hommes.
 4. **Données.** Tableau filtré et export CSV au format français (séparateur « ; », virgule décimale).
 
@@ -133,6 +131,10 @@ Outils : Python · pandas · Plotly · Streamlit · pytest · GitHub Actions · 
 ## Auteur, licence et données
 
 **Auteur :** Nanliebe SAKPANI · www.linkedin.com/in/nanliebe-sakpani-89a5b2284 · sakpanikodjo@gmail.com 
+
+
+
+
 
 Code sous licence MIT. Les données proviennent de l'Organisation mondiale de la santé (OMS), Boîte à outils
 d'évaluation de l'équité en santé (HEAT) ; leur réutilisation reste soumise aux conditions de la source.

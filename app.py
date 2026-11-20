@@ -6,6 +6,7 @@ from pathlib import Path
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -199,22 +200,24 @@ with t3:
         sx.update_layout(title="Évolution selon le sexe, moyenne des pays sélectionnés (%)", hovermode="x unified",
                          xaxis_title=None, yaxis_title=None)
         show(sx, 400)
-        ans = sorted(set(range(y_first, y_last + 1, 5)) | {y_last})
-        eb = e[e.date.isin(ans)].copy()
-        eb["Année"] = eb.date.astype(str)
-        eb["etiquette"] = [fr(v) if dt == y_last else "" for v, dt in zip(eb.estimate, eb.date)]
-        pc = px.bar(eb, x="Année", y="estimate", color="subgroup", barmode="group", facet_col="setting", facet_col_wrap=4,
-                    text="etiquette", color_discrete_map={F: C_F, H: C_H}, category_orders={"Année": [str(x) for x in ans]},
-                    title="Évolution selon le sexe, pays par pays (%)",
-                    labels={"estimate": "Prévalence (%)", "subgroup": "Sexe", "setting": "Pays"})
-        pc.update_traces(textposition="outside", cliponaxis=False, textfont_size=11)
-        pc.for_each_annotation(lambda an: an.update(text=an.text.split("=")[-1], font=dict(size=14)))
-        pc.update_xaxes(title=None, tickfont_size=11)
-        pc.update_yaxes(title=None, range=[0, e.estimate.max() * 1.18])
-        pc.update_layout(bargap=0.15, bargroupgap=0.05)
+        pays = sorted(e.setting.unique())
+        ncol = min(4, len(pays))
+        lo, hi = math.floor(e.estimate.min()) - 1, math.ceil(e.estimate.max()) + 1  # même échelle pour tous les pays
+        pc = make_subplots(rows=math.ceil(len(pays) / ncol), cols=ncol, subplot_titles=pays, shared_yaxes=True,
+                           horizontal_spacing=0.04, vertical_spacing=0.15)
+        for k, c in enumerate(pays):
+            pos = dict(row=k // ncol + 1, col=k % ncol + 1)
+            s = e[e.setting == c].pivot_table(index="date", columns="subgroup", values="estimate")
+            for nom, col, extra in ((H, C_H, {}), (F, C_F, dict(fill="tonexty", fillcolor="rgba(194,24,91,.10)"))):
+                pc.add_trace(go.Scatter(x=s.index, y=s[nom], name=nom, legendgroup=nom, showlegend=(k == 0),
+                                        line=dict(color=col, width=4), hovertemplate=f"{c} – {nom} %{{x}} : %{{y:.1f}} %<extra></extra>",
+                                        **extra), **pos)
+        pc.update_xaxes(dtick=10, tickfont_size=11, gridcolor="#EDF1F5")
+        pc.update_yaxes(range=[lo, hi], tickfont_size=11, gridcolor="#EDF1F5")
+        pc.update_annotations(font_size=14)
+        pc.update_layout(title="Évolution selon le sexe, pays par pays (%)")
         show(pc, 620)
-        st.caption(f"Une barre tous les 5 ans, plus la dernière année ({y_last}), dont la valeur est affichée. "
-                   "Les barres partent de zéro.")
+        st.caption("Même échelle pour tous les pays. La zone colorée représente l'écart entre les femmes et les hommes.")
         with st.expander("Voir le détail par pays"):
             st.dataframe(p[[F, H, "ecart"]].rename(columns={"ecart": "Écart femmes − hommes"}).rename_axis("Pays").round(1))
         st.caption(f"Tableau : valeurs de {y_sx}, dernière année disponible. Les écarts sont des différences brutes, sans test statistique.")
