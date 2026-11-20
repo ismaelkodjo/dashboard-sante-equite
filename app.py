@@ -8,10 +8,9 @@ import plotly.express as px
 import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).parent))
-from traductions import INDICATEURS, PAYS, SOUS_THEMES, dimension_fr, sous_groupe_fr  # noqa: E402
+from traductions import CODE, LIBELLE, PAYS, dimension_fr, sous_groupe_fr  # noqa: E402
 
 DEFAULT_FILE = Path(__file__).parent / "data" / "data_nettoye.csv.gz"
-PREFERRED = "NCD_HYP_PREVALENCE_A"  # indicateur affiché par défaut
 
 
 def fr(x: float, signe: bool = False) -> str:
@@ -27,36 +26,28 @@ def show(fig):
 @st.cache_data(show_spinner="Chargement des données…")
 def load() -> pd.DataFrame:
     df = pd.read_csv(DEFAULT_FILE)
-    df = df[df.indicator_abbr.isin(INDICATEURS)].copy()
-    df["theme"] = df.indicator_abbr.map(lambda a: INDICATEURS[a][0])
-    df["indicator_name"] = df.indicator_abbr.map(lambda a: INDICATEURS[a][1])
+    df = df[df.indicator_abbr == CODE].copy()
     df["setting"] = df.setting.replace(PAYS)
     df["dimension"] = df.dimension.map(dimension_fr)
     df["subgroup"] = df.subgroup.map(sous_groupe_fr)
     return df
 
 
-st.set_page_config(page_title="Tableau de bord – Maladies chroniques", page_icon="📊", layout="wide")
+st.set_page_config(page_title="Tableau de bord – Hypertension", page_icon="📊", layout="wide")
 st.markdown("<style>.modebar-container{display:none}</style>", unsafe_allow_html=True)  # barre d'outils Plotly (anglais)
 df = load()
 
 sb = st.sidebar
 sb.header("Filtres")
-theme = sb.selectbox("Sous-thème", SOUS_THEMES)
-inds = df.loc[df.theme == theme, ["indicator_abbr", "indicator_name"]].drop_duplicates().sort_values("indicator_name")
-names = inds.indicator_name.tolist()
-pref = inds.loc[inds.indicator_abbr == PREFERRED, "indicator_name"].tolist()
-ind = sb.selectbox("Indicateur", names, index=names.index(pref[0]) if pref else 0)
-sub = df[df.indicator_name == ind]
-all_countries = sorted(sub.setting.unique())
+all_countries = sorted(df.setting.unique())
 countries = sb.multiselect("Pays", all_countries, default=all_countries, placeholder="Choisir des pays")
-ymin, ymax = int(sub.date.min()), int(sub.date.max())
+ymin, ymax = int(df.date.min()), int(df.date.max())
 y0, y1 = sb.slider("Période", ymin, ymax, (ymin, ymax)) if ymin < ymax else (ymin, ymax)
 
-st.title("Tableau de bord – maladies chroniques")
-st.caption(f"{theme} · Indicateur : **{ind}** · {len(countries)} pays · {y0}–{y1}")
+st.title("Prévalence de l'hypertension en Afrique de l'Ouest")
+st.caption(f"{LIBELLE} · valeurs standardisées selon l'âge · {len(countries)} pays · {y0}–{y1}")
 
-d = sub[sub.setting.isin(countries) & sub.date.between(y0, y1)]
+d = df[df.setting.isin(countries) & df.date.between(y0, y1)]
 if d.empty:
     st.warning("Aucune donnée pour cette sélection.")
     st.stop()
