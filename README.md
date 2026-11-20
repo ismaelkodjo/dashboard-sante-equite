@@ -5,8 +5,7 @@
 ![Streamlit](https://img.shields.io/badge/Streamlit-Plotly-ff4b4b)
 ![Licence](https://img.shields.io/badge/Licence-MIT-green)
 
-**Application en ligne : https://VOTRE-APP.streamlit.app** *(remplacer par l'adresse obtenue après le déploiement)*
-
+**Application en ligne :https://dashboard-sante-equite-c5cwxkfwypb98jmsxbh9nc.streamlit.app/** 
 > **English summary.** Interactive dashboard (Streamlit + Plotly) on chronic diseases in eight West African countries
 > (Benin, Burkina Faso, Côte d'Ivoire, Ghana, Mali, Niger, Senegal, Togo), built from a WHO health-equity extract.
 > It keeps 29 indicators (hypertension, diabetes, cholesterol, NCD mortality, physical activity) out of 175, shows
@@ -144,7 +143,6 @@ Outils : Python · pandas · Plotly · Streamlit · pytest · GitHub Actions · 
 
 ## Auteur, licence et données
 
-**Auteur :** [Votre nom] · [LinkedIn] · [adresse email] *(à compléter)*
-
+**Auteur :** Nanliebe SAKPANI · www.linkedin.com/in/nanliebe-sakpani-89a5b2284 · sakpanikodjo@gmail.com 
 Code sous licence MIT. Les données proviennent de l'Organisation mondiale de la santé (OMS), Boîte à outils
 d'évaluation de l'équité en santé (HEAT) ; leur réutilisation reste soumise aux conditions de la source.
