@@ -6,7 +6,6 @@ from pathlib import Path
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
 import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).parent))
@@ -55,9 +54,9 @@ def fr(x: float, signe: bool = False) -> str:
     return s.replace("-", "\u2212")
 
 
-def show(fig, hauteur=430):
+def show(fig, hauteur=430, legende=None):
     fig.update_layout(separators=", ", template="plotly_white", height=hauteur, font=dict(family=FONT, color=ENCRE),
-                      legend=dict(orientation="h", y=1.12, x=0, title_text=""), hoverlabel=dict(font_family=FONT))
+                      legend=legende or dict(orientation="h", y=1.12, x=0, title_text=""), hoverlabel=dict(font_family=FONT))
     st.plotly_chart(fig, theme=None)
 
 
@@ -200,24 +199,24 @@ with t3:
         sx.update_layout(title="Évolution selon le sexe, moyenne des pays sélectionnés (%)", hovermode="x unified",
                          xaxis_title=None, yaxis_title=None)
         show(sx, 400)
-        pays = sorted(e.setting.unique())
-        ncol = min(4, len(pays))
-        lo, hi = math.floor(e.estimate.min()) - 1, math.ceil(e.estimate.max()) + 1  # même échelle pour tous les pays
-        pc = make_subplots(rows=math.ceil(len(pays) / ncol), cols=ncol, subplot_titles=pays, shared_yaxes=True,
-                           horizontal_spacing=0.04, vertical_spacing=0.15)
-        for k, c in enumerate(pays):
-            pos = dict(row=k // ncol + 1, col=k % ncol + 1)
+        pc = go.Figure()
+        for c in sorted(e.setting.unique()):
             s = e[e.setting == c].pivot_table(index="date", columns="subgroup", values="estimate")
-            for nom, col, extra in ((H, C_H, {}), (F, C_F, dict(fill="tonexty", fillcolor="rgba(194,24,91,.10)"))):
-                pc.add_trace(go.Scatter(x=s.index, y=s[nom], name=nom, legendgroup=nom, showlegend=(k == 0),
-                                        line=dict(color=col, width=4), hovertemplate=f"{c} – {nom} %{{x}} : %{{y:.1f}} %<extra></extra>",
-                                        **extra), **pos)
-        pc.update_xaxes(dtick=10, tickfont_size=11, gridcolor="#EDF1F5")
-        pc.update_yaxes(range=[lo, hi], tickfont_size=11, gridcolor="#EDF1F5")
-        pc.update_annotations(font_size=14)
-        pc.update_layout(title="Évolution selon le sexe, pays par pays (%)")
-        show(pc, 620)
-        st.caption("Même échelle pour tous les pays. La zone colorée représente l'écart entre les femmes et les hommes.")
+            if not {F, H} <= set(s.columns):
+                continue
+            for nom, trait in ((F, "solid"), (H, "dash")):
+                pc.add_trace(go.Scatter(x=s.index, y=s[nom], name=c, legendgroup=c, showlegend=(nom == F),
+                                        line=dict(color=couleur[c], width=3, dash=trait),
+                                        hovertemplate=f"{c} – {nom} %{{x}} : %{{y:.1f}} %<extra></extra>"))
+        for nom, trait, lib in ((F, "solid", "trait plein"), (H, "dash", "tirets")):  # repères de style : le sexe
+            pc.add_trace(go.Scatter(x=[None], y=[None], mode="lines", name=f"{nom} ({lib})",
+                                    line=dict(color="#586A82", width=3, dash=trait)))
+        pc.update_xaxes(dtick=5, gridcolor="#EDF1F5")
+        pc.update_yaxes(gridcolor="#EDF1F5", title="Prévalence (%)")
+        pc.update_layout(title="Évolution selon le sexe, pays par pays (%)", hovermode="closest")
+        show(pc, 560, legende=dict(orientation="v", x=1.02, y=1, title_text=""))
+        st.caption("Une couleur par pays. Trait plein : femmes ; tirets : hommes. Cliquez sur un pays dans la légende "
+                   "pour le masquer ou l'afficher.")
         with st.expander("Voir le détail par pays"):
             st.dataframe(p[[F, H, "ecart"]].rename(columns={"ecart": "Écart femmes − hommes"}).rename_axis("Pays").round(1))
         st.caption(f"Tableau : valeurs de {y_sx}, dernière année disponible. Les écarts sont des différences brutes, sans test statistique.")
