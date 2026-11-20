@@ -199,14 +199,22 @@ with t3:
         sx.update_layout(title="Évolution selon le sexe, moyenne des pays sélectionnés (%)", hovermode="x unified",
                          xaxis_title=None, yaxis_title=None)
         show(sx, 400)
-        pc = px.line(e, x="date", y="estimate", color="subgroup", facet_col="setting", facet_col_wrap=4,
-                     color_discrete_map={F: C_F, H: C_H}, title="Évolution selon le sexe, pays par pays (%)",
-                     labels={"date": "Année", "estimate": "Prévalence (%)", "subgroup": "Sexe", "setting": "Pays"})
-        pc.update_traces(line_width=3)
+        ans = sorted(set(range(y_first, y_last + 1, 5)) | {y_last})
+        eb = e[e.date.isin(ans)].copy()
+        eb["Année"] = eb.date.astype(str)
+        eb["etiquette"] = [fr(v) if dt == y_last else "" for v, dt in zip(eb.estimate, eb.date)]
+        pc = px.bar(eb, x="Année", y="estimate", color="subgroup", barmode="group", facet_col="setting", facet_col_wrap=4,
+                    text="etiquette", color_discrete_map={F: C_F, H: C_H}, category_orders={"Année": [str(x) for x in ans]},
+                    title="Évolution selon le sexe, pays par pays (%)",
+                    labels={"estimate": "Prévalence (%)", "subgroup": "Sexe", "setting": "Pays"})
+        pc.update_traces(textposition="outside", cliponaxis=False, textfont_size=11)
         pc.for_each_annotation(lambda an: an.update(text=an.text.split("=")[-1], font=dict(size=14)))
-        pc.update_xaxes(title=None)
-        pc.update_yaxes(title=None)
-        show(pc, 560)
+        pc.update_xaxes(title=None, tickfont_size=11)
+        pc.update_yaxes(title=None, range=[0, e.estimate.max() * 1.18])
+        pc.update_layout(bargap=0.15, bargroupgap=0.05)
+        show(pc, 620)
+        st.caption(f"Une barre tous les 5 ans, plus la dernière année ({y_last}), dont la valeur est affichée. "
+                   "Les barres partent de zéro.")
         with st.expander("Voir le détail par pays"):
             st.dataframe(p[[F, H, "ecart"]].rename(columns={"ecart": "Écart femmes − hommes"}).rename_axis("Pays").round(1))
         st.caption(f"Tableau : valeurs de {y_sx}, dernière année disponible. Les écarts sont des différences brutes, sans test statistique.")

@@ -1,11 +1,8 @@
 # Prévalence de l'hypertension en Afrique de l'Ouest : un tableau de bord interactif
 
-!\[CI](https://github.com/ismaelkodjo/dashboard-sante-equite/actions/workflows/ci.yml/badge.svg)
-!\[Python](https://img.shields.io/badge/Python-3.12-blue)
-!\[Streamlit](https://img.shields.io/badge/Streamlit-Plotly-ff4b4b)
-!\[Licence](https://img.shields.io/badge/Licence-MIT-green)
 
-**Application en ligne : https://dashboard-sante-equite-c5cwxkfwypb98jmsxbh9nc.streamlit.app/**
+
+**Application en ligne :  https://dashboard-sante-equite-c5cwxkfwypb98jmsxbh9nc.streamlit.app/**
 
 > \*\*English summary.\*\* Interactive dashboard (Streamlit + Plotly) on one indicator: hypertension prevalence among
 > adults aged 30–79 (age-standardized), 1990–2019, in eight West African countries (Benin, Burkina Faso, Côte
@@ -88,7 +85,7 @@ diminution, en points de pourcentage). Femmes et hommes ont chacun leur couleur 
 1. **Vue d'ensemble.** Carte avec échelle de couleurs et classement des pays ; les couleurs tiennent compte du fait
 qu'une prévalence élevée est défavorable.
 2. **Tendances.** Courbes par pays et variation entre la première et la dernière année.
-3. **Femmes et hommes.** Évolution par sexe en moyenne, puis pays par pays (graphiques en courbes), et écart
+3. **Femmes et hommes.** Évolution par sexe en moyenne, puis pays par pays (barres tous les 5 ans), et écart
 femmes − hommes.
 4. **Données.** Tableau filtré et export CSV au format français (séparateur « ; », virgule décimale).
 
