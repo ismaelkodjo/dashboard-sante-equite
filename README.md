@@ -1,8 +1,8 @@
 # Prévalence de l'hypertension en Afrique de l'Ouest : un tableau de bord interactif
 
+**Application en ligne : https:https://dashboard-sante-equite-c5cwxkfwypb98jmsxbh9nc.streamlit.app/**
 
-
-**Application en ligne : https:https://dashboard-sante-equite-c5cwxkfwypb98jmsxbh9nc.streamlit.app/**> \*\*English summary.\*\* Interactive dashboard (Streamlit + Plotly) on one indicator: hypertension prevalence among
+> \*\*English summary.\*\* Interactive dashboard (Streamlit + Plotly) on one indicator: hypertension prevalence among
 > adults aged 30–79 (age-standardized), 1990–2019, in eight West African countries (Benin, Burkina Faso, Côte
 > d'Ivoire, Ghana, Mali, Niger, Senegal, Togo), built from a WHO health-equity extract. The simple average over the
 > eight countries is stable (35.8 % in 1990, 35.7 % in 2019) but country trends diverge, and prevalence is higher

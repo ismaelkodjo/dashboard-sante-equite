@@ -31,7 +31,7 @@ section[data-testid='stSidebar'] {background:#FFFFFF;}
 .hero .synthese {font-size:1.4rem; line-height:1.4; margin-top:22px; padding-top:18px; border-top:1px solid rgba(255,255,255,.28); max-width:940px;}
 .hero .sexe {font-size:1.02rem; opacity:.8; margin-top:10px; max-width:900px;}
 .cartes {display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; margin-bottom:14px;}
-.carte {background:#fff; border-radius:8px; padding:14px 18px 14px; border-left:6px solid var(--c);}
+.carte {background:#fff; border-radius:8px; padding:14px 18px 14px;}
 .carte .n {font-weight:700; font-size:1.05rem;}
 .carte .v {font-family:'Bricolage Grotesque',sans-serif; font-size:1.75rem; font-weight:800; line-height:1.25;}
 .carte .a {font-size:.88rem; color:#586A82;}
@@ -134,7 +134,7 @@ for c in last.index:
     else:
         cls = "bon" if (diff > 0) == fav else "mauvais"
         flèche, mot = ("▲", "Augmentation") if diff > 0 else ("▼", "Diminution")
-    cartes.append(f"<div class='carte' style='--c:{couleur[c]}'><div class='n'>{c}</div>"
+    cartes.append(f"<div class='carte'><div class='n'>{c}</div>"
                   f"<div class='v {cls}'>{flèche} {fr(diff, True)} points</div><div class='a'>{mot} depuis {y_first}</div></div>")
 st.markdown(f"<div class='cartes'>{''.join(cartes)}</div>", unsafe_allow_html=True)
 
