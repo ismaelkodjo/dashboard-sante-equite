@@ -1,4 +1,5 @@
 """Tableau de bord – prévalence de l'hypertension en Afrique de l'Ouest (données OMS HEAT)."""
+import math
 import sys
 from pathlib import Path
 
@@ -8,7 +9,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 sys.path.insert(0, str(Path(__file__).parent))
-from traductions import CODE, LIBELLE, PAYS, dimension_fr, sous_groupe_fr  # noqa: E402
+from traductions import CODE, LIBELLE, LOCUTIONS, PAYS, dimension_fr, sous_groupe_fr  # noqa: E402
 
 DEFAULT_FILE = Path(__file__).parent / "data" / "data_nettoye.csv.gz"
 F, H = "Femmes", "Hommes"
@@ -23,21 +24,18 @@ CSS = """<style>
 .modebar-container {display:none;}
 .block-container {max-width:1240px; padding-top:1.4rem;}
 section[data-testid='stSidebar'] {background:#FFFFFF;}
-.hero {background:#0B2545; color:#fff; border-radius:18px; padding:34px 40px 30px; margin-bottom:22px;}
+.hero {background:#0B2545; color:#fff; border-radius:18px; padding:36px 42px 32px; margin-bottom:22px;}
 .hero p {margin:0; color:#fff;}
-.hero .sur {font-size:.95rem; opacity:.72; margin-bottom:12px;}
-.hero h1 {font-family:'Bricolage Grotesque',sans-serif; font-weight:800; font-size:2.3rem; line-height:1.18; color:#fff; margin:0; padding:0; max-width:920px;}
-.hero .sexe {margin-top:18px; font-size:1.1rem; opacity:.92; max-width:840px; border-top:1px solid rgba(255,255,255,.25); padding-top:14px;}
-.cartes {display:grid; grid-template-columns:repeat(auto-fill,minmax(215px,1fr)); gap:14px; margin-bottom:14px;}
-.carte {background:#fff; border-radius:8px; padding:14px 16px 12px; border-left:6px solid var(--c);}
-.carte .n {font-weight:700; font-size:1.02rem;}
-.carte .v {font-family:'Bricolage Grotesque',sans-serif; font-size:2.1rem; font-weight:800; line-height:1.15;}
-.carte .a {font-size:.84rem; color:#586A82;}
-.carte .b {height:6px; background:#E3EAF0; border-radius:3px; margin:9px 0;}
-.carte .b i {display:block; height:6px; border-radius:3px; background:var(--c);}
-.carte .sx {font-size:.85rem; display:flex; justify-content:space-between;}
-.pt {display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:5px;}
-.bon {color:#1E8E5A; font-weight:700;} .mauvais {color:#C0392B; font-weight:700;}
+.hero h1 {font-family:'Bricolage Grotesque',sans-serif; font-weight:800; font-size:2.7rem; line-height:1.12; color:#fff; margin:0; padding:0; max-width:1000px;}
+.hero h1 span {display:block; font-size:1.2rem; font-weight:800; line-height:1.35; margin-top:12px; opacity:.88;}
+.hero .synthese {font-size:1.4rem; line-height:1.4; margin-top:22px; padding-top:18px; border-top:1px solid rgba(255,255,255,.28); max-width:940px;}
+.hero .sexe {font-size:1.02rem; opacity:.8; margin-top:10px; max-width:900px;}
+.cartes {display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:14px; margin-bottom:14px;}
+.carte {background:#fff; border-radius:8px; padding:14px 18px 14px; border-left:6px solid var(--c);}
+.carte .n {font-weight:700; font-size:1.05rem;}
+.carte .v {font-family:'Bricolage Grotesque',sans-serif; font-size:1.75rem; font-weight:800; line-height:1.25;}
+.carte .a {font-size:.88rem; color:#586A82;}
+.bon {color:#1E8E5A;} .mauvais {color:#C0392B;}
 .duo {display:flex; flex-wrap:wrap; gap:14px 44px; margin:4px 0 16px;}
 .duo div {font-family:'Bricolage Grotesque',sans-serif; font-size:2.7rem; font-weight:800; line-height:1.1;}
 .duo small {display:block; font-family:'DM Sans',sans-serif; font-size:.95rem; font-weight:500; color:#586A82;}
@@ -52,7 +50,8 @@ section[data-testid='stSidebar'] {background:#FFFFFF;}
 
 def fr(x: float, signe: bool = False) -> str:
     """Nombre au format français (1 234,5)."""
-    return format(x, "+,.1f" if signe else ",.1f").replace(",", "\u202f").replace(".", ",")
+    s = format(x, "+,.1f" if signe else ",.1f").replace(",", "\u202f").replace(".", ",")
+    return s.replace("-", "\u2212")
 
 
 def show(fig, hauteur=430):
@@ -90,14 +89,7 @@ fav = bool(d.favourable_indicator.iloc[0])  # True : une valeur élevée est fav
 echelle = ["#FFF1D6", "#F6B26B", "#D9534F", "#7A1E0E"]
 echelle = echelle[::-1] if fav else echelle
 couleur = {c: PALETTE[i % len(PALETTE)] for i, c in enumerate(all_countries)}
-
-
-def tendance(diff):
-    """(classe CSS, texte) d'une variation ; vert si elle va dans le bon sens."""
-    if abs(diff) < 0.05:
-        return "", "► stable"
-    return ("bon" if (diff > 0) == fav else "mauvais"), f"{'▲' if diff > 0 else '▼'} {fr(diff, True)} pt"
-
+BON, MAUVAIS = "#1E8E5A", "#C0392B"
 
 # Moyenne nationale par pays et par année (setting_average est répétée sur chaque sous-groupe)
 nat = (d.dropna(subset=["setting_average"]).groupby(["setting", "iso3", "date"], as_index=False)
@@ -106,6 +98,7 @@ first, last = nat.groupby("setting").first(), nat.groupby("setting").last()
 y_first, y_last = int(nat.date.min()), int(nat.date.max())
 val = last.setting_average
 moy = val.mean()
+rc = (math.floor(val.min()) - 1, math.ceil(val.max()) + 1)  # étendue commune de l'échelle de couleurs
 
 # Répartition selon le sexe (dernière année disponible de chaque pays)
 e = d[d.dimension == "Sexe"].dropna(subset=["estimate"])
@@ -116,31 +109,33 @@ sexes = {F, H} <= set(p.columns)
 if sexes:
     p["ecart"] = p[F] - p[H]
 
-# --- En-tête : le constat en une phrase
+# --- En-tête : grand titre en gras, puis la synthèse
+zone = "en Afrique de l'Ouest" if len(countries) == len(all_countries) else "dans les pays sélectionnés"
+loc = lambda c: LOCUTIONS.get(c, "en " + c)  # noqa: E731
 if len(val) > 1:
-    phrase = (f"En {y_last}, {fr(moy)} % des adultes de 30 à 79 ans sont hypertendus en moyenne, "
-              f"de {fr(val.min())} % ({val.idxmin()}) à {fr(val.max())} % ({val.idxmax()}).")
+    phrase = (f"En {y_last}, {fr(moy)} % des adultes sont hypertendus en moyenne {zone}, "
+              f"de {fr(val.min())} % {loc(val.idxmin())} à {fr(val.max())} % {loc(val.idxmax())}.")
 else:
-    phrase = f"En {y_last}, {fr(moy)} % des adultes de 30 à 79 ans sont hypertendus ({val.index[0]})."
+    phrase = f"En {y_last}, {fr(moy)} % des adultes sont hypertendus {loc(val.index[0])}."
 sexe_txt = ""
 if sexes:
     n = int((p.ecart > 0).sum())
     sexe_txt = (f"<p class='sexe'>La prévalence est plus élevée chez les femmes que chez les hommes dans {n} pays sur "
-                f"{len(p)}. Écart moyen femmes − hommes : {fr(p.ecart.mean(), True)} points.</p>")
-st.markdown(f"<div class='hero'><p class='sur'>{LIBELLE} – valeurs standardisées selon l'âge, moyenne simple "
-            f"des pays sélectionnés, source OMS</p><h1>{phrase}</h1>{sexe_txt}</div>", unsafe_allow_html=True)
+                f"{len(p)} ; écart moyen femmes − hommes : {fr(p.ecart.mean(), True)} points.</p>")
+st.markdown(f"<div class='hero'><h1>{LIBELLE}<span>Valeurs standardisées selon l'âge, moyenne des pays sélectionnés, "
+            f"source : OMS</span></h1><p class='synthese'>{phrase}</p>{sexe_txt}</div>", unsafe_allow_html=True)
 
-# --- Une carte par pays
+# --- Une carte par pays : uniquement l'évolution depuis la première année
 cartes = []
 for c in last.index:
-    cls, txt = tendance(val[c] - first.setting_average[c])
-    sx = ""
-    if sexes and c in p.index:
-        sx = (f"<div class='sx'><span><span class='pt' style='background:{C_F}'></span>{F} {fr(p.loc[c, F])} %</span>"
-              f"<span><span class='pt' style='background:{C_H}'></span>{H} {fr(p.loc[c, H])} %</span></div>")
+    diff = val[c] - first.setting_average[c]
+    if abs(diff) < 0.05:
+        cls, flèche, mot = "", "►", "Stabilité"
+    else:
+        cls = "bon" if (diff > 0) == fav else "mauvais"
+        flèche, mot = ("▲", "Augmentation") if diff > 0 else ("▼", "Diminution")
     cartes.append(f"<div class='carte' style='--c:{couleur[c]}'><div class='n'>{c}</div>"
-                  f"<div class='v'>{fr(val[c])} %</div><div class='a'><span class='{cls}'>{txt}</span> depuis {y_first}</div>"
-                  f"<div class='b'><i style='width:{min(100, val[c] / df.setting_average.max() * 100):.0f}%'></i></div>{sx}</div>")
+                  f"<div class='v {cls}'>{flèche} {fr(diff, True)} points</div><div class='a'>{mot} depuis {y_first}</div></div>")
 st.markdown(f"<div class='cartes'>{''.join(cartes)}</div>", unsafe_allow_html=True)
 
 t1, t2, t3, t4 = st.tabs(["Vue d'ensemble", "Tendances", "Femmes et hommes", "Données"])
@@ -149,21 +144,26 @@ with t1:
     a, b = st.columns(2)
     m = px.choropleth(last.reset_index(), locations="iso3", color="setting_average", hover_name="setting",
                       hover_data={"date": True, "iso3": False}, color_continuous_scale=echelle, scope="africa",
-                      labels={"setting_average": "Prévalence (%)", "date": "Année"},
+                      range_color=rc, labels={"setting_average": "Prévalence (%)", "date": "Année"},
                       title=f"Prévalence en {y_last} (%)")
     m.update_geos(fitbounds="locations", visible=False, showcountries=True, countrycolor="#FFFFFF",
                   showland=True, landcolor="#E8EDF2", bgcolor="rgba(0,0,0,0)")
-    m.update_layout(margin=dict(l=0, r=0, t=50, b=0), coloraxis_colorbar=dict(title="%", thickness=14))
+    m.update_layout(margin=dict(l=10, r=10, t=50, b=10), coloraxis_colorbar=dict(
+        orientation="h", x=0.5, xanchor="center", y=-0.02, yanchor="top", len=0.85, thickness=20, outlinewidth=0,
+        title=dict(text="Échelle : prévalence de l'hypertension (%)", side="top", font=dict(size=14)),
+        tickfont=dict(size=14), ticks="outside", ticklen=5, dtick=2))
     with a:
-        show(m)
+        show(m, 500)
     r = last.reset_index().sort_values("setting_average")
-    bar = px.bar(r, x="setting_average", y="setting", orientation="h", text="setting_average", color="setting_average",
-                 color_continuous_scale=echelle, title="Classement des pays (%)",
-                 labels={"setting_average": "Prévalence (%)", "setting": "Pays", "date": "Année"}, hover_data={"date": True})
-    bar.update_traces(texttemplate="%{text:.1f}")
-    bar.update_layout(coloraxis_showscale=False, xaxis_title=None, yaxis_title=None)
+    rk = go.Figure(go.Scatter(x=r.setting_average, y=r.setting, mode="markers+text",
+                              text=[f"{fr(v)} %" for v in r.setting_average], textposition="middle right",
+                              textfont=dict(size=14), hovertemplate="%{y} : %{x:.1f} %<extra></extra>",
+                              marker=dict(size=22, color=r.setting_average, colorscale=echelle, cmin=rc[0], cmax=rc[1],
+                                          line=dict(color="#FFFFFF", width=2))))
+    rk.update_layout(title="Classement des pays (%)", yaxis_title=None, xaxis=dict(
+        title="Prévalence (%)", range=[val.min() - 3, val.max() + 5], gridcolor="#E3EAF0"))
     with b:
-        show(bar)
+        show(rk, 500)
 
 with t2:
     ln = px.line(nat, x="date", y="setting_average", color="setting", markers=True, color_discrete_map=couleur,
@@ -172,11 +172,15 @@ with t2:
     ln.update_layout(hovermode="x unified", xaxis_title=None)
     show(ln, 460)
     var = (val - first.setting_average).sort_values()
-    vb = go.Figure(go.Bar(x=var.values, y=var.index, orientation="h", text=[fr(v, True) for v in var],
-                          textposition="outside", cliponaxis=False, hovertemplate="%{y} : %{x:+.1f} points<extra></extra>",
-                          marker_color=["#1E8E5A" if (v > 0) == fav else "#C0392B" for v in var]))
-    vb.update_layout(title=f"Variation entre {y_first} et {y_last} (points de pourcentage)", xaxis_title=None, yaxis_title=None)
-    show(vb, 400)
+    vb = go.Figure(go.Scatter(x=var.values, y=var.index, mode="markers+text", text=[fr(v, True) for v in var],
+                              textposition="middle right", textfont=dict(size=14),
+                              hovertemplate="%{y} : %{x:+.1f} points<extra></extra>",
+                              marker=dict(size=22, line=dict(color="#FFFFFF", width=2),
+                                          color=[BON if (v > 0) == fav else MAUVAIS for v in var])))
+    vb.add_vline(x=0, line_color="#8A97A8", line_dash="dot")
+    vb.update_layout(title=f"Variation entre {y_first} et {y_last} (points de pourcentage)", yaxis_title=None,
+                     xaxis=dict(title="Points de pourcentage", range=[var.min() - 1.5, var.max() + 1.5], gridcolor="#E3EAF0"))
+    show(vb, 420)
 
 with t3:
     if not sexes:
@@ -187,28 +191,25 @@ with t3:
                     f"<div style='color:{C_H}'>{fr(p[H].mean())} %<small>{H}, moyenne des pays</small></div>"
                     f"<div style='color:{ENCRE}'>{fr(p.ecart.mean(), True)} pt<small>Écart femmes − hommes</small></div></div>",
                     unsafe_allow_html=True)
-        q = p.sort_values(F)
-        db = go.Figure()
-        for c, row in q.iterrows():
-            db.add_trace(go.Scatter(x=[row[H], row[F]], y=[c, c], mode="lines", line=dict(color="#C9D3DD", width=6),
-                                    hoverinfo="skip", showlegend=False))
-        for nom, col, pos in ((H, C_H, "middle left"), (F, C_F, "middle right")):
-            db.add_trace(go.Scatter(x=q[nom], y=q.index, mode="markers+text", name=nom, text=[fr(v) for v in q[nom]],
-                                    textposition=pos, marker=dict(color=col, size=17, line=dict(color="#fff", width=2)),
-                                    hovertemplate="%{y} – " + nom + " : %{x:.1f} %<extra></extra>"))
-        db.update_layout(title="Prévalence selon le sexe, dernière année disponible (%)", xaxis_title=None, yaxis_title=None)
-        show(db, 470)
         ev = e.groupby(["date", "subgroup"]).estimate.mean().unstack()
         sx = go.Figure()
-        sx.add_trace(go.Scatter(x=ev.index, y=ev[H], name=H, line=dict(color=C_H, width=3)))
-        sx.add_trace(go.Scatter(x=ev.index, y=ev[F], name=F, line=dict(color=C_F, width=3), fill="tonexty",
+        sx.add_trace(go.Scatter(x=ev.index, y=ev[H], name=H, line=dict(color=C_H, width=4)))
+        sx.add_trace(go.Scatter(x=ev.index, y=ev[F], name=F, line=dict(color=C_F, width=4), fill="tonexty",
                                 fillcolor="rgba(194,24,91,.10)"))
         sx.update_layout(title="Évolution selon le sexe, moyenne des pays sélectionnés (%)", hovermode="x unified",
                          xaxis_title=None, yaxis_title=None)
         show(sx, 400)
+        pc = px.line(e, x="date", y="estimate", color="subgroup", facet_col="setting", facet_col_wrap=4,
+                     color_discrete_map={F: C_F, H: C_H}, title="Évolution selon le sexe, pays par pays (%)",
+                     labels={"date": "Année", "estimate": "Prévalence (%)", "subgroup": "Sexe", "setting": "Pays"})
+        pc.update_traces(line_width=3)
+        pc.for_each_annotation(lambda an: an.update(text=an.text.split("=")[-1], font=dict(size=14)))
+        pc.update_xaxes(title=None)
+        pc.update_yaxes(title=None)
+        show(pc, 560)
         with st.expander("Voir le détail par pays"):
             st.dataframe(p[[F, H, "ecart"]].rename(columns={"ecart": "Écart femmes − hommes"}).rename_axis("Pays").round(1))
-        st.caption(f"Valeurs de {y_sx}, dernière année disponible. Les écarts sont des différences brutes, sans test statistique.")
+        st.caption(f"Tableau : valeurs de {y_sx}, dernière année disponible. Les écarts sont des différences brutes, sans test statistique.")
 
 with t4:
     labels = {"setting": "Pays", "date": "Année", "dimension": "Dimension", "subgroup": "Sous-groupe",

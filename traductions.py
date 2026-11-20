@@ -20,3 +20,8 @@ def sous_groupe_fr(x: str) -> str:
     x = SOUS_GROUPES.get(x, x)
     x = re.sub(r"(\d+)\+ years", r"\1 ans et plus", x)
     return re.sub(r"(\d+)-(\d+) years", r"\1-\2 ans", x)
+
+
+# Locutions pour les phrases de synthèse (« au Niger », « en Côte d'Ivoire »)
+LOCUTIONS = {"Bénin": "au Bénin", "Burkina Faso": "au Burkina Faso", "Côte d'Ivoire": "en Côte d'Ivoire",
+             "Ghana": "au Ghana", "Mali": "au Mali", "Niger": "au Niger", "Sénégal": "au Sénégal", "Togo": "au Togo"}

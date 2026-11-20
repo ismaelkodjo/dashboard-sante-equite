@@ -81,14 +81,14 @@ flowchart LR
 
 **Filtres.** Pays et période (1990–2019).
 
-L'en-tête énonce le constat en une phrase (moyenne des pays, pays extrêmes, écart entre femmes et hommes), suivi d'une
-carte par pays : valeur, variation depuis 1990 et prévalence chez les femmes et chez les hommes. Femmes et hommes ont
-chacun leur couleur dans tout le tableau de bord.
+L'en-tête affiche le titre de l'indicateur en gras, puis une synthèse en une phrase (moyenne des pays, valeurs
+extrêmes, écart entre femmes et hommes). Une carte par pays indique ensuite l'évolution depuis 1990 (augmentation ou
+diminution, en points de pourcentage). Femmes et hommes ont chacun leur couleur dans tout le tableau de bord.
 
-1. **Vue d'ensemble.** Carte et classement des pays ; les couleurs tiennent compte du fait qu'une prévalence élevée
-   est défavorable.
+1. **Vue d'ensemble.** Carte avec échelle de couleurs et classement des pays ; les couleurs tiennent compte du fait
+   qu'une prévalence élevée est défavorable.
 2. **Tendances.** Courbes par pays et variation entre la première et la dernière année.
-3. **Femmes et hommes.** Prévalence par sexe et par pays (dernière année), évolution des deux courbes et écart
+3. **Femmes et hommes.** Évolution par sexe en moyenne, puis pays par pays (graphiques en courbes), et écart
    femmes − hommes.
 4. **Données.** Tableau filtré et export CSV au format français (séparateur « ; », virgule décimale).
 
