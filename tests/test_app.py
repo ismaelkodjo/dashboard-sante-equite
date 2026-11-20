@@ -34,7 +34,8 @@ def test_traductions_completes():
 def test_un_seul_indicateur_8_pays():
     at = AppTest.from_file(APP, default_timeout=120).run()
     assert not at.exception
-    assert len(at.sidebar.selectbox) == 0 and len(at.metric) == 8
+    assert len(at.sidebar.selectbox) == 0 and len(at.main.selectbox) == 0
+    assert sum(m.value.count("class='carte'") for m in at.markdown) == 8
 
 
 def test_interface_et_graphiques_en_francais(monkeypatch):
@@ -42,7 +43,7 @@ def test_interface_et_graphiques_en_francais(monkeypatch):
     monkeypatch.setattr(st, "plotly_chart", lambda fig, *a, **k: figs.append(fig.to_json()))
     at = AppTest.from_file(APP, default_timeout=120).run()
     assert not at.exception
-    textes = [e.value for e in at.markdown] + [e.value for e in at.caption] + [at.title[0].value]
+    textes = [e.value for e in at.markdown] + [e.value for e in at.caption]
     textes += [m.label for m in at.metric]
     for box in at.main.selectbox:
         textes += [box.label, *box.options]

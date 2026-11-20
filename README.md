@@ -17,8 +17,8 @@
 un seul, bien défini, et le lire dans le temps, entre pays et entre femmes et hommes.
 **Les données.** 480 lignes : 8 pays × 30 années (1990 à 2019) × 2 sexes, pour l'indicateur « Prévalence de
 l'hypertension, adultes de 30 à 79 ans (%) », standardisé selon l'âge.
-**La méthode.** Sélection de l'indicateur, traduction en français, calcul de la moyenne nationale, mesures
-d'inégalité entre sexes (écart absolu, rapport), puis visualisation interactive testée automatiquement.
+**La méthode.** Sélection de l'indicateur, traduction en français, calcul de la moyenne nationale, écart
+femmes − hommes, puis visualisation interactive testée automatiquement.
 **Le résultat.** Un tableau de bord à quatre onglets, entièrement en français, déployable en un clic et mis à jour à
 chaque `git push`.
 
@@ -60,7 +60,7 @@ flowchart LR
     A["Fichier OMS<br/>175 indicateurs"] --> B["Indicateur retenu<br/>prévalence de l'hypertension"]
     B --> C["Traduction<br/>en français"]
     C --> D["Moyenne nationale<br/>par pays et année"]
-    D --> E["Inégalités<br/>femmes - hommes"]
+    D --> E["Répartition<br/>femmes - hommes"]
     E --> F["Tableau de bord<br/>4 onglets"]
     F --> G["Tests<br/>automatiques"]
     G --> H["Déploiement<br/>GitHub + Streamlit"]
@@ -72,8 +72,8 @@ flowchart LR
 | 2. Indicateur | Sélection par code (`NCD_HYP_PREVALENCE_A`) ; aucune autre donnée n'est conservée dans le dépôt | 175 → 1 indicateur | `traductions.py` |
 | 3. Traduction | Libellés de l'indicateur, des pays, de la dimension et des sous-groupes ; nombres au format français | Interface 100 % française, vérifiée par un test | `traductions.py`, pytest |
 | 4. Moyenne nationale | La moyenne nationale, répétée sur chaque sous-groupe dans le fichier, est dédoublonnée | Une valeur par pays et par année | pandas |
-| 5. Inégalités | Écart absolu (max − min) et rapport (max / min) entre femmes et hommes ; intervalles de confiance à 95 % | Suivi de l'écart dans le temps | pandas, Plotly |
-| 6. Visualisation | Carte, classement, tendances, inégalités, tableau et export CSV | Quatre onglets interactifs | Streamlit, Plotly |
+| 5. Répartition selon le sexe | Prévalence par sexe, écart femmes − hommes par pays et dans le temps | Comparaison par sexe, dernière année et évolution | pandas, Plotly |
+| 6. Visualisation | Carte, classement, tendances, répartition selon le sexe, tableau et export CSV | Quatre onglets interactifs, charte graphique soignée | Streamlit, Plotly, CSS |
 | 7. Tests | Démarrage, 8 pays affichés, absence de texte anglais, un seul indicateur dans les données | 5 tests | pytest, GitHub Actions |
 | 8. Déploiement | Dépôt GitHub relié à Streamlit Community Cloud | Mise à jour automatique à chaque `git push` | Streamlit Community Cloud |
 
@@ -81,11 +81,15 @@ flowchart LR
 
 **Filtres.** Pays et période (1990–2019).
 
-1. **Vue d'ensemble.** Dernière valeur par pays avec sa variation, carte et classement ; les couleurs tiennent compte
-   du fait qu'une prévalence élevée est défavorable.
+L'en-tête énonce le constat en une phrase (moyenne des pays, pays extrêmes, écart entre femmes et hommes), suivi d'une
+carte par pays : valeur, variation depuis 1990 et prévalence chez les femmes et chez les hommes. Femmes et hommes ont
+chacun leur couleur dans tout le tableau de bord.
+
+1. **Vue d'ensemble.** Carte et classement des pays ; les couleurs tiennent compte du fait qu'une prévalence élevée
+   est défavorable.
 2. **Tendances.** Courbes par pays et variation entre la première et la dernière année.
-3. **Inégalités.** Comparaison femmes–hommes avec intervalles de confiance, puis évolution de l'écart absolu ou du
-   rapport.
+3. **Femmes et hommes.** Prévalence par sexe et par pays (dernière année), évolution des deux courbes et écart
+   femmes − hommes.
 4. **Données.** Tableau filtré et export CSV au format français (séparateur « ; », virgule décimale).
 
 ## Ce que j'en retiens
