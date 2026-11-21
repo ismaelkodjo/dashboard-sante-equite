@@ -1,8 +1,8 @@
 # Prévalence de l'hypertension en Afrique de l'Ouest : un tableau de bord interactif
 
-**Application en ligne : https:https://dashboard-sante-equite-c5cwxkfwypb98jmsxbh9nc.streamlit.app/**
+**Application en ligne : https://ismaelkodjo.github.io/dashboard-sante-equite/**
 
-> \*\*English summary.\*\* Interactive dashboard (Streamlit + Plotly) on one indicator: hypertension prevalence among
+> \\\*\\\*English summary.\\\*\\\* Interactive dashboard (Streamlit + Plotly) on one indicator: hypertension prevalence among
 > adults aged 30–79 (age-standardized), 1990–2019, in eight West African countries (Benin, Burkina Faso, Côte
 > d'Ivoire, Ghana, Mali, Niger, Senegal, Togo), built from a WHO health-equity extract. The simple average over the
 > eight countries is stable (35.8 % in 1990, 35.7 % in 2019) but country trends diverge, and prevalence is higher
@@ -52,19 +52,19 @@ n'ont pas fait l'objet d'un test statistique.*
 
 ```mermaid
 flowchart LR
-    A\["Fichier OMS<br/>175 indicateurs"] --> B\["Indicateur retenu<br/>prévalence de l'hypertension"]
-    B --> C\["Traduction<br/>en français"]
-    C --> D\["Moyenne nationale<br/>par pays et année"]
-    D --> E\["Répartition<br/>femmes - hommes"]
-    E --> F\["Tableau de bord<br/>4 onglets"]
-    F --> G\["Tests<br/>automatiques"]
-    G --> H\["Déploiement<br/>GitHub + Streamlit"]
+    A\\\["Fichier OMS<br/>175 indicateurs"] --> B\\\["Indicateur retenu<br/>prévalence de l'hypertension"]
+    B --> C\\\["Traduction<br/>en français"]
+    C --> D\\\["Moyenne nationale<br/>par pays et année"]
+    D --> E\\\["Répartition<br/>femmes - hommes"]
+    E --> F\\\["Tableau de bord<br/>4 onglets"]
+    F --> G\\\["Tests<br/>automatiques"]
+    G --> H\\\["Déploiement<br/>GitHub + Streamlit"]
 ```
 
 |Étape|Ce qui a été fait|Résultat|Outils|
 |-|-|-|-|
-|1. Données sources|Extraction de l'indicateur depuis le fichier OMS (175 indicateurs), enregistré en CSV compressé|480 lignes|pandas (`scripts/prepare\_data.py`)|
-|2. Indicateur|Sélection par code (`NCD\_HYP\_PREVALENCE\_A`) ; aucune autre donnée n'est conservée dans le dépôt|175 → 1 indicateur|`traductions.py`|
+|1. Données sources|Extraction de l'indicateur depuis le fichier OMS (175 indicateurs), enregistré en CSV compressé|480 lignes|pandas (`scripts/prepare\\\_data.py`)|
+|2. Indicateur|Sélection par code (`NCD\\\_HYP\\\_PREVALENCE\\\_A`) ; aucune autre donnée n'est conservée dans le dépôt|175 → 1 indicateur|`traductions.py`|
 |3. Traduction|Libellés de l'indicateur, des pays, de la dimension et des sous-groupes ; nombres au format français|Interface 100 % française, vérifiée par un test|`traductions.py`, pytest|
 |4. Moyenne nationale|La moyenne nationale, répétée sur chaque sous-groupe dans le fichier, est dédoublonnée|Une valeur par pays et par année|pandas|
 |5. Répartition selon le sexe|Prévalence par sexe, écart femmes − hommes par pays et dans le temps|Comparaison par sexe, dernière année et évolution|pandas, Plotly|
@@ -95,7 +95,7 @@ il mesure uniquement sa prévalence.
 urbain ou rural, la richesse ou l'âge.
 * **Une période qui s'arrête en 2019.** Aucune donnée plus récente pour cet indicateur dans le fichier.
 * **Version standardisée selon l'âge.** Elle sert à comparer des pays à structures d'âge différentes. La version
-« valeurs brutes » (`NCD\_HYP\_PREVALENCE\_C`) existe dans le fichier mais n'est pas utilisée.
+« valeurs brutes » (`NCD\\\_HYP\\\_PREVALENCE\\\_C`) existe dans le fichier mais n'est pas utilisée.
 * **Méthode d'estimation non vérifiée.** Les valeurs sont celles du fichier source. Je n'ai pas contrôlé s'il s'agit
 d'enquêtes ou de modèles : à vérifier dans la documentation de l'OMS avant toute publication.
 
@@ -121,7 +121,7 @@ pytest -q tests                # 5 tests
 
 Le fichier OMS d'origine (175 indicateurs) n'est pas inclus dans le dépôt. Pour régénérer les données ou changer
 d'indicateur (par exemple la version brute) : modifier `CODE` et `LIBELLE` dans `traductions.py`, puis lancer
-`python scripts/prepare\_data.py chemin/fichier\_oms.xlsx`.
+`python scripts/prepare\\\_data.py chemin/fichier\\\_oms.xlsx`.
 
 ```
 dashboard-sante-equite/
@@ -130,9 +130,9 @@ dashboard-sante-equite/
 ├── index.html                   # version web autonome (GitHub Pages)
 ├── traductions.py               # indicateur retenu et libellés français
 ├── requirements.txt
-├── data/data\_nettoye.csv.gz     # données de l'application : cet indicateur seul (480 lignes)
-├── scripts/prepare\_data.py      # extraction de l'indicateur depuis le fichier OMS
-├── tests/test\_app.py
+├── data/data\\\_nettoye.csv.gz     # données de l'application : cet indicateur seul (480 lignes)
+├── scripts/prepare\\\_data.py      # extraction de l'indicateur depuis le fichier OMS
+├── tests/test\\\_app.py
 ├── .streamlit/config.toml       # thème et options d'affichage
 └── .github/workflows/ci.yml     # tests automatiques à chaque push
 ```
