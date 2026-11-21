@@ -99,6 +99,16 @@ urbain ou rural, la richesse ou l'âge.
 * **Méthode d'estimation non vérifiée.** Les valeurs sont celles du fichier source. Je n'ai pas contrôlé s'il s'agit
 d'enquêtes ou de modèles : à vérifier dans la documentation de l'OMS avant toute publication.
 
+## Version web autonome (GitHub Pages)
+
+`index.html` est une seconde version du tableau de bord, sans Python : un seul fichier HTML qui contient les données et la
+carte. Même contenu que l'application Streamlit, avec un bandeau d'en-tête cinématique (vidéo en boucle) et des
+graphiques dessinés en SVG.
+
+Pour la publier : sur GitHub, **Settings → Pages**, source « Deploy from a branch », branche `main`, dossier
+`/ (root)`. L'adresse sera de la forme `https://ismaelkodjo.github.io/dashboard-sante-equite/`. En local, un double-clic
+sur le fichier suffit (une connexion internet est nécessaire pour la police et la vidéo).
+
 ## Reproduire le projet
 
 ```bash
@@ -117,6 +127,7 @@ d'indicateur (par exemple la version brute) : modifier `CODE` et `LIBELLE` dans 
 dashboard-sante-equite/
 ├── README.md
 ├── app.py                       # application Streamlit
+├── index.html                   # version web autonome (GitHub Pages)
 ├── traductions.py               # indicateur retenu et libellés français
 ├── requirements.txt
 ├── data/data\_nettoye.csv.gz     # données de l'application : cet indicateur seul (480 lignes)
@@ -131,6 +142,8 @@ Outils : Python · pandas · Plotly · Streamlit · pytest · GitHub Actions · 
 ## Auteur, licence et données
 
 **Auteur :** Nanliebe SAKPANI · www.linkedin.com/in/nanliebe-sakpani-89a5b2284 · sakpanikodjo@gmail.com
+
+
 
 Code sous licence MIT. Les données proviennent de l'Organisation mondiale de la santé (OMS), Boîte à outils
 d'évaluation de l'équité en santé (HEAT) ; leur réutilisation reste soumise aux conditions de la source.

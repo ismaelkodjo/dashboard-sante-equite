@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hypertension en Afrique de l'Ouest – tableau de bord</title>
+<meta name="description" content="Prévalence de l'hypertension chez les adultes de 30 à 79 ans dans huit pays d'Afrique de l'Ouest, de 1990 à 2019, selon l'OMS.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%2305080e'/><path d='M3 17h7l3-8 5 15 3-7h8' fill='none' stroke='%23ff4f8b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Instrument+Serif&display=swap" rel="stylesheet">
+<style>
+html,body{background:#05080e;margin:0}
+:root{--fg:#f3f6fa;--mut:rgba(243,246,250,.64);--dim:rgba(243,246,250,.42);--line:rgba(255,255,255,.11);--bad:#ff6b5e;--good:#4ade80;--f:#ff4f8b;--h:#2dd4bf;--ease:cubic-bezier(.22,1,.36,1)}
+*{box-sizing:border-box}
+body{color:var(--fg);font:400 16px/1.55 "Inter Tight",system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::selection{background:#ff4f8b;color:#fff}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;opacity:.07;z-index:50;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E")}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.g{background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:22px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.wrap{width:100%;max-width:1240px;margin:0 auto;padding:0 clamp(18px,4vw,56px)}
+/* navigation */
+nav{position:fixed;top:16px;left:0;right:0;margin:0 auto;width:fit-content;z-index:40;display:flex;align-items:center;gap:2px;padding:5px;max-width:calc(100vw - 20px);border-radius:999px;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav .mk{display:flex;align-items:center;gap:8px;padding:0 14px 0 12px;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
+nav button{background:none;border:0;border-radius:999px;padding:10px 16px;font-size:14px;font-weight:500;color:var(--mut);white-space:nowrap;min-height:44px;transition:background .25s,color .25s}
+nav button:hover{color:var(--fg)}
+nav button[aria-selected=true]{background:#fff;color:#05080e}
+/* hero */
+.hero{position:relative;min-height:100svh;display:flex;overflow:hidden;isolation:isolate}
+.hero video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:72% 50%;z-index:-2;opacity:0;transition:opacity 1s}
+.hero video.ok{opacity:.9}
+.hero::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(5,8,14,.9) 0,rgba(5,8,14,.55) 50%,rgba(5,8,14,.12) 100%),linear-gradient(180deg,rgba(5,8,14,.35) 0,rgba(5,8,14,0) 28%,rgba(5,8,14,.94) 100%)}
+.hero .wrap{display:flex;flex-direction:column;justify-content:space-between;padding-top:108px;padding-bottom:clamp(30px,6vh,64px)}
+.eyebrow{margin:0 0 20px;font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--mut)}
+h1{margin:0;font:800 clamp(2.1rem,5vw,4.5rem)/1.02 "Inter Tight",sans-serif;letter-spacing:-.035em;max-width:21ch;text-wrap:balance}
+h1 span{display:block;margin-top:20px;max-width:38rem;font:700 clamp(1rem,1.5vw,1.25rem)/1.4 "Inter Tight",sans-serif;letter-spacing:-.01em;color:rgba(243,246,250,.86)}
+.bandeau{display:grid;grid-template-columns:auto minmax(0,36rem);gap:clamp(22px,5vw,76px);align-items:end;margin-top:44px}
+.mega{font:400 clamp(5.4rem,15.5vw,14.5rem)/.8 "Instrument Serif",Georgia,serif;letter-spacing:-.045em;white-space:nowrap}
+#synthese{margin:0;font:500 clamp(1.1rem,1.7vw,1.45rem)/1.38 "Inter Tight",sans-serif;letter-spacing:-.01em}
+#sexe{margin:12px 0 0;color:var(--mut);font-size:1rem}
+.up{opacity:0;animation:up .95s var(--ease) both;animation-delay:var(--d,0s)}
+@keyframes up{from{opacity:0;transform:translateY(26px);filter:blur(8px)}to{opacity:1;transform:none;filter:none}}
+/* filtres et cartes */
+main{padding-bottom:40px}
+.filtres{display:flex;flex-wrap:wrap;gap:12px 30px;align-items:center;padding:30px 0 18px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;background:none;border:1px solid var(--line);border-radius:999px;padding:9px 15px;min-height:40px;font-size:14px;font-weight:500;color:var(--dim);transition:all .25s}
+.chip i{width:9px;height:9px;border-radius:50%;opacity:.4;transition:opacity .25s}
+.chip[aria-pressed=true]{color:var(--fg);background:rgba(255,255,255,.1)}
+.chip[aria-pressed=true] i{opacity:1}
+.rng{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;font-size:14px;color:var(--mut)}
+.rng b{color:var(--fg);min-width:2.6em}
+input[type=range]{accent-color:#fff;width:140px;height:28px}
+.cartes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.carte{padding:16px 18px 15px}
+.carte b{font-weight:700}
+.carte .v{font:800 1.65rem/1.3 "Inter Tight",sans-serif;letter-spacing:-.025em}
+.carte small{display:block;color:var(--mut);font-size:.88rem}
+.carte small span{white-space:nowrap}.bien{color:var(--good)}.mal{color:var(--bad)}
+.rv{opacity:0;transform:translateY(24px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.rv.in{opacity:1;transform:none}
+/* panneaux */
+.panel{margin-top:22px;animation:fade .6s var(--ease)}
+.panel[hidden]{display:none}
+@keyframes fade{from{opacity:0;transform:translateY(12px)}}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{padding:22px 22px 18px;min-width:0}
+.card+.card.full,.full{margin-top:16px}
+.card h3{margin:0 0 4px;font:700 1.08rem/1.3 "Inter Tight",sans-serif;letter-spacing:-.015em}
+.card .sub{margin:0 0 10px;color:var(--mut);font-size:.9rem}
+svg{display:block;max-width:100%;overflow:visible}
+svg text{font-family:"Inter Tight",sans-serif}
+.gl{stroke:rgba(255,255,255,.08)}.zl{stroke:rgba(255,255,255,.4);stroke-dasharray:3 4}.gd{stroke:rgba(255,255,255,.06)}
+.tk{fill:var(--dim);font-size:12px}
+.ln{fill:none;stroke-width:2.75;stroke-linecap:round;stroke-linejoin:round;transition:opacity .25s}
+.lb{fill:var(--fg);font-size:14px;font-weight:600}.vl{fill:var(--fg);font-size:14px;font-weight:700}
+.pt{stroke:#05080e;stroke-width:2.5;transform-box:fill-box;transform-origin:center;animation:pop .7s var(--ease) both}
+@keyframes pop{from{transform:scale(0);opacity:0}}
+.mp{stroke:#05080e;stroke-width:1.4;transition:filter .2s}.mp:hover{filter:brightness(1.18)}
+.mn{font-size:11.5px;font-weight:600;pointer-events:none}.mv{font-size:17px;font-weight:800;pointer-events:none}
+.echelle{margin:6px auto 0;max-width:420px}
+.echelle p{margin:0 0 6px;font-size:.92rem;font-weight:600;text-align:center}
+.barre{height:16px;border-radius:999px}
+.tks{display:flex;justify-content:space-between;margin-top:6px;font-size:13px;color:var(--mut);font-variant-numeric:tabular-nums}
+.leg{display:flex;flex-wrap:wrap;gap:6px 18px;margin-top:12px;font-size:.9rem;color:var(--mut)}
+.lg{display:inline-flex;align-items:center;gap:8px;cursor:default}.lg i{width:11px;height:11px;border-radius:50%}
+.lg:hover{color:var(--fg)}
+.sty{display:inline-flex;align-items:center;gap:8px}
+.sty svg{width:34px;height:6px}
+.trio{display:flex;flex-wrap:wrap;gap:12px 60px;margin:20px 0 6px}
+.trio div{font:400 clamp(3.2rem,6.5vw,5.6rem)/1 "Instrument Serif",Georgia,serif;letter-spacing:-.03em}
+.trio small{display:block;margin-top:6px;font:500 .95rem/1.3 "Inter Tight",sans-serif;letter-spacing:0;color:var(--mut)}
+.tw{max-height:540px;overflow:auto;border-radius:14px}
+table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+th{position:sticky;top:0;background:#0c131d;text-align:left;font-weight:600;color:var(--mut)}
+td,th{padding:10px 14px;border-bottom:1px solid var(--line)}
+.btn{display:inline-flex;align-items:center;gap:10px;margin-top:16px;background:#fff;color:#05080e;border:0;border-radius:999px;padding:12px 24px;min-height:44px;font-weight:600;font-size:14px;transition:transform .2s var(--ease)}
+.btn:hover{transform:translateY(-2px)}.btn:active{transform:scale(.97)}
+.note{margin:14px 0 0;color:var(--dim);font-size:.86rem}
+footer{padding:34px 0 56px;color:var(--dim);font-size:.88rem;border-top:1px solid var(--line)}
+#tip{position:fixed;left:0;top:0;z-index:60;pointer-events:none;opacity:0;background:rgba(10,16,26,.94);border:1px solid var(--line);border-radius:14px;padding:10px 13px;font-size:13px;transition:opacity .15s}
+#tip div{display:flex;gap:8px;align-items:center;white-space:nowrap;justify-content:space-between}
+#tip i{width:8px;height:8px;border-radius:50%;flex:none}
+@media(max-width:900px){.cartes{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2{grid-template-columns:1fr}.bandeau{grid-template-columns:1fr;gap:22px}}
+@media(max-width:560px){nav .mk{display:none}nav button{padding:10px 12px;font-size:13px}.carte .v{font-size:1.2rem}.rng{width:100%}input[type=range]{flex:1 1 110px;min-width:0;width:auto}.lb,.vl{font-size:12px}.card{padding:18px 14px 14px}.hero .wrap{padding-top:92px}}
+@media(prefers-reduced-motion:reduce){*,*::before{animation:none!important;transition:none!important}.up,.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<nav class="g" role="tablist" aria-label="Sections du tableau de bord">
+  <span class="mk"><svg width="22" height="22" viewBox="0 0 32 32" aria-hidden="true"><path d="M3 17h7l3-8 5 15 3-7h8" fill="none" stroke="#ff4f8b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Hypertension</span></span>
+  <button role="tab" data-t="vue" aria-selected="true">Vue d'ensemble</button>
+  <button role="tab" data-t="tend" aria-selected="false">Tendances</button>
+  <button role="tab" data-t="sexe" aria-selected="false">Femmes et hommes</button>
+  <button role="tab" data-t="data" aria-selected="false">Données</button>
+</nav>
+
+<header class="hero">
+  <video id="vid" autoplay muted loop playsinline preload="auto" aria-hidden="true" src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_064122_c4750c0e-7476-4b44-94a2-a85a65c63bf2.mp4"></video>
+  <div class="wrap">
+    <div>
+      <p class="eyebrow up" style="--d:.15s">Estimations de l'OMS, 1990–2019</p>
+      <h1 class="up" style="--d:.3s">Prévalence de l'hypertension, adultes de 30 à 79 ans (%)<span>Valeurs standardisées selon l'âge, moyenne des pays sélectionnés, source : OMS</span></h1>
+    </div>
+    <div class="bandeau up" style="--d:.7s">
+      <div class="mega" id="mega" aria-label="Prévalence moyenne">–</div>
+      <div><p id="synthese"></p><p id="sexe"></p></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <noscript><p>Ce tableau de bord nécessite JavaScript.</p></noscript>
+  <div class="filtres">
+    <div class="chips" id="chips" role="group" aria-label="Pays"></div>
+    <div class="rng"><label for="ra">De</label><b id="la"></b><input id="ra" type="range" min="0" value="0"><label for="rb">à</label><b id="lb"></b><input id="rb" type="range" min="0"></div>
+  </div>
+  <div class="cartes" id="cartes"></div>
+  <div id="panneaux">
+    <section class="panel" id="vue">
+      <div class="grid2">
+        <div class="card g"><h3 id="carteTitre"></h3><p class="sub">Plus la couleur est foncée, plus la prévalence est élevée.</p><div id="map"></div>
+          <div class="echelle"><p>Échelle : prévalence de l'hypertension (%)</p><div class="barre" id="barre"></div><div class="tks" id="tks"></div></div></div>
+        <div class="card g"><h3>Classement des pays (%)</h3><p class="sub">Dernière année de la période choisie.</p><div id="rank"></div></div>
+      </div>
+    </section>
+    <section class="panel" id="tend" hidden>
+      <div class="card g"><h3>Évolution de la prévalence (%)</h3><p class="sub">Survolez le graphique pour lire les valeurs de chaque pays.</p><div id="t1"></div><div class="leg" id="l1"></div></div>
+      <div class="card g full"><h3 id="varTitre"></h3><p class="sub">Vert : la prévalence diminue. Rouge : elle augmente.</p><div id="t2"></div></div>
+    </section>
+    <section class="panel" id="sexe" hidden>
+      <div class="card g"><div class="trio" id="trio"></div></div>
+      <div class="card g full"><h3>Évolution selon le sexe, moyenne des pays sélectionnés (%)</h3><p class="sub">La zone colorée représente l'écart entre les femmes et les hommes.</p><div id="s1"></div></div>
+      <div class="card g full"><h3>Évolution selon le sexe, pays par pays (%)</h3><p class="sub">Une couleur par pays.</p><div id="s2"></div><div class="leg" id="l2"></div></div>
+    </section>
+    <section class="panel" id="data" hidden>
+      <div class="card g"><h3>Données de la sélection</h3><p class="sub">Valeurs standardisées selon l'âge, en %.</p><div class="tw" id="tw"></div>
+        <button class="btn" id="dl">Télécharger la sélection (CSV) <span aria-hidden="true">↓</span></button>
+        <p class="note">Le fichier utilise le format français : séparateur « ; » et virgule décimale (ouverture directe dans Excel).</p></div>
+    </section>
+  </div>
+</main>
+<footer><div class="wrap">Source : Organisation mondiale de la santé (OMS), Boîte à outils d'évaluation de l'équité en santé (HEAT). Libellés traduits en français à partir du fichier source.</div></footer>
+<div id="tip" role="status"></div>
+
+<script>
+const D={"y0":1990,"p":{"Burkina Faso":{"i":"BFA","a":[32.2,32.2,32.2,32.2,32.2,32.3,32.3,32.4,32.4,32.5,32.6,32.8,32.9,33.0,33.1,33.2,33.2,33.2,33.1,33.0,32.8,32.5,32.2,32.0,31.7,31.5,31.2,31.0,30.7,30.5],"f":[32.0,32.0,32.0,32.0,32.0,32.0,32.0,32.1,32.2,32.3,32.4,32.5,32.7,32.8,33.0,33.1,33.2,33.2,33.2,33.1,33.0,32.8,32.6,32.4,32.3,32.1,32.0,31.9,31.8,31.7],"h":[32.2,32.3,32.3,32.3,32.4,32.4,32.4,32.5,32.6,32.6,32.7,32.8,32.9,32.9,33.0,33.0,33.0,32.9,32.8,32.6,32.3,32.0,31.6,31.2,30.9,30.5,30.1,29.7,29.4,29.1]},"Bénin":{"i":"BEN","a":[33.9,33.9,34.0,34.1,34.2,34.3,34.5,34.6,34.7,34.9,35.0,35.2,35.3,35.5,35.6,35.7,35.7,35.7,35.6,35.4,35.1,34.7,34.4,33.9,33.5,33.1,32.6,32.1,31.6,31.2],"f":[33.9,34.0,34.0,34.1,34.1,34.2,34.3,34.4,34.5,34.6,34.8,34.9,35.1,35.3,35.4,35.5,35.6,35.7,35.6,35.5,35.3,35.1,34.9,34.6,34.4,34.1,33.8,33.6,33.3,33.0],"h":[33.5,33.6,33.7,33.9,34.0,34.1,34.3,34.4,34.6,34.7,34.9,35.0,35.2,35.3,35.4,35.4,35.4,35.3,35.1,34.8,34.4,34.0,33.4,32.8,32.2,31.6,30.9,30.2,29.5,28.9]},"Côte d'Ivoire":{"i":"CIV","a":[36.6,36.7,36.8,36.9,37.0,37.1,37.2,37.4,37.5,37.7,37.8,38.0,38.2,38.4,38.6,38.8,39.0,39.1,39.1,39.1,39.0,38.8,38.6,38.4,38.2,38.0,37.8,37.6,37.4,37.3],"f":[35.1,35.1,35.2,35.2,35.2,35.3,35.3,35.4,35.5,35.6,35.8,36.0,36.2,36.5,36.7,36.9,37.2,37.4,37.5,37.6,37.7,37.7,37.7,37.6,37.6,37.6,37.6,37.6,37.6,37.6],"h":[37.8,38.0,38.1,38.3,38.5,38.6,38.8,39.0,39.2,39.3,39.5,39.7,39.9,40.1,40.3,40.4,40.5,40.6,40.5,40.4,40.2,39.9,39.5,39.2,38.8,38.4,38.1,37.7,37.3,36.9]},"Ghana":{"i":"GHA","a":[35.3,35.5,35.7,35.9,36.1,36.3,36.5,36.7,36.9,37.2,37.4,37.7,37.9,38.2,38.4,38.5,38.6,38.6,38.4,38.2,37.9,37.5,37.1,36.6,36.1,35.7,35.2,34.7,34.3,33.9],"f":[35.7,35.9,36.1,36.4,36.6,36.9,37.2,37.4,37.7,38.1,38.4,38.7,39.1,39.4,39.7,39.8,39.9,40.0,39.9,39.7,39.5,39.1,38.8,38.4,38.0,37.6,37.2,36.9,36.5,36.1],"h":[34.7,34.9,35.0,35.1,35.3,35.4,35.5,35.7,35.9,36.0,36.2,36.4,36.6,36.7,36.9,37.0,37.0,36.9,36.7,36.5,36.1,35.7,35.2,34.6,34.1,33.5,33.0,32.5,31.9,31.4]},"Mali":{"i":"MLI","a":[34.1,34.1,34.1,34.1,34.1,34.1,34.2,34.2,34.3,34.4,34.6,34.7,34.9,35.1,35.2,35.4,35.5,35.6,35.7,35.7,35.6,35.6,35.4,35.3,35.2,35.1,34.9,34.8,34.7,34.6],"f":[36.1,36.1,36.1,36.1,36.1,36.2,36.3,36.3,36.5,36.6,36.8,37.0,37.2,37.5,37.7,37.9,38.1,38.3,38.5,38.5,38.6,38.6,38.5,38.5,38.5,38.4,38.4,38.4,38.3,38.3],"h":[31.7,31.7,31.7,31.7,31.7,31.7,31.7,31.8,31.8,31.9,32.0,32.0,32.2,32.3,32.4,32.5,32.5,32.6,32.5,32.5,32.3,32.2,32.0,31.7,31.5,31.3,31.1,30.9,30.7,30.5]},"Niger":{"i":"NER","a":[40.2,40.4,40.6,40.8,41.0,41.2,41.4,41.6,41.8,42.0,42.3,42.6,42.8,43.1,43.4,43.6,43.8,43.9,44.0,43.9,43.8,43.6,43.4,43.1,42.9,42.6,42.3,42.1,41.8,41.5],"f":[39.5,39.6,39.8,39.9,40.1,40.3,40.5,40.7,40.9,41.2,41.5,41.8,42.1,42.5,42.8,43.1,43.4,43.6,43.7,43.7,43.7,43.6,43.5,43.4,43.3,43.2,43.0,42.9,42.8,42.6],"h":[40.9,41.1,41.3,41.5,41.7,41.9,42.1,42.4,42.6,42.8,43.1,43.3,43.6,43.8,44.0,44.2,44.3,44.3,44.3,44.2,44.0,43.7,43.3,42.9,42.5,42.1,41.7,41.3,40.8,40.4]},"Sénégal":{"i":"SEN","a":[38.4,38.4,38.5,38.7,38.8,38.9,39.0,39.2,39.3,39.5,39.8,40.0,40.3,40.5,40.8,41.1,41.3,41.4,41.5,41.6,41.5,41.5,41.4,41.3,41.1,41.0,40.9,40.7,40.6,40.5],"f":[39.1,39.1,39.2,39.3,39.4,39.5,39.6,39.8,40.0,40.2,40.5,40.7,41.0,41.4,41.7,42.0,42.3,42.5,42.7,42.8,42.9,42.9,42.9,42.9,42.9,43.0,43.0,43.0,42.9,42.9],"h":[37.5,37.6,37.8,37.9,38.0,38.2,38.3,38.4,38.6,38.8,39.0,39.2,39.4,39.6,39.8,39.9,40.1,40.1,40.1,40.0,39.9,39.7,39.4,39.1,38.8,38.5,38.2,37.9,37.6,37.3]},"Togo":{"i":"TGO","a":[35.6,35.6,35.7,35.7,35.8,35.8,35.9,36.0,36.1,36.2,36.4,36.6,36.8,37.0,37.2,37.3,37.5,37.5,37.6,37.5,37.5,37.3,37.2,37.0,36.8,36.6,36.5,36.3,36.1,36.0],"f":[35.5,35.5,35.6,35.6,35.7,35.7,35.8,35.9,36.0,36.2,36.3,36.6,36.8,37.0,37.2,37.4,37.6,37.8,37.9,37.9,37.9,37.9,37.8,37.8,37.7,37.6,37.6,37.5,37.5,37.5],"h":[35.5,35.6,35.6,35.7,35.8,35.8,35.9,36.0,36.1,36.2,36.4,36.5,36.7,36.8,37.0,37.1,37.2,37.2,37.2,37.1,36.9,36.6,36.4,36.1,35.8,35.5,35.1,34.8,34.5,34.3]}}}, MAP={"SEN":{"d":"M22,250L15,238L8,233L15,230L22,219L25,211L31,206L38,207L45,204L54,204L61,208L71,212L80,224L90,234L91,244L94,253L99,257L101,263L100,268L98,269L90,268L88,269L85,270L74,266L67,266L39,265L35,267L30,266L22,269L20,257L33,257L37,255L40,255L45,252L52,255L58,255L65,252L62,247L57,250L52,250L46,246L41,246L38,250Z","c":[55,238]},"MLI":{"d":"M100,268L101,263L99,257L94,253L91,244L90,234L95,232L98,222L102,222L113,226L121,223L127,224L129,221L190,221L193,210L190,208L183,139L176,69L199,69L250,105L300,140L304,147L313,152L320,155L320,165L337,163L337,200L329,210L328,220L314,222L294,223L288,229L279,230L269,230L265,227L257,229L243,235L240,240L228,247L226,251L220,254L213,252L209,256L206,267L194,279L195,284L191,291L192,300L186,302L182,304L180,297L175,299L173,299L170,303L158,303L154,301L152,302L148,298L148,293L147,292L143,293L144,288L147,284L141,278L139,274L136,270L133,270L129,272L124,274L120,277L114,276L110,272L107,272L103,274L101,274Z","c":[220,191]},"BEN":{"d":"M313,362L301,364L297,354L298,319L295,316L294,308L289,303L285,298L286,290L292,289L295,282L302,280L305,276L310,271L316,271L327,280L327,285L330,294L327,300L329,305L321,314L317,319L314,328L314,338Z","c":[308,311]},"NER":{"d":"M496,103L500,129L506,133L506,138L512,143L509,150L503,183L502,203L483,218L476,238L483,244L483,254L492,254L491,262L487,263L486,267L483,268L473,251L470,250L458,259L446,254L438,254L434,256L425,255L416,262L408,262L390,254L383,258L375,258L370,252L355,246L339,248L335,251L333,260L328,266L327,280L316,271L310,271L305,276L306,265L288,262L288,254L279,244L277,237L279,230L288,229L294,223L314,222L328,220L329,210L337,200L337,163L358,156L402,124L453,93L477,101L486,109Z","c":[413,191]},"TGO":{"d":"M286,290L285,298L289,303L294,308L295,316L298,319L297,354L301,364L289,367L286,362L282,352L280,345L284,331L280,326L278,314L278,303L272,295L273,290Z","c":[288,329]},"GHA":{"d":"M273,290L272,295L278,303L278,314L280,326L284,331L280,345L282,352L286,362L289,367L265,376L257,381L243,386L230,381L231,375L224,362L228,345L234,333L230,311L228,299L229,291L255,290L261,291L266,289Z","c":[254,337]},"CIV":{"d":"M152,302L154,301L158,303L170,303L173,299L175,299L180,297L182,304L186,302L192,300L198,303L201,308L208,311L213,308L220,307L230,311L234,333L228,345L224,362L231,375L230,381L223,382L213,379L203,379L185,381L175,386L160,391L157,391L158,378L160,377L159,371L153,364L148,363L144,359L147,352L145,345L146,341L148,341L149,334L148,331L150,329L155,327L151,315L148,309L149,304Z","c":[189,343]},"BFA":{"d":"M192,300L191,291L195,284L194,279L206,267L209,256L213,252L220,254L226,251L228,247L240,240L243,235L257,229L265,227L269,230L279,230L277,237L279,244L288,254L288,262L306,265L305,276L302,280L295,282L292,289L286,290L273,290L266,289L261,291L255,290L229,291L228,299L230,311L220,307L213,308L208,311L201,308L198,303Z","c":[246,270]}};
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const REDUCED=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const NAMES=Object.keys(D.p).sort((a,b)=>a.localeCompare(b,"fr"));
+const PAL=["#7dd3fc","#fbbf24","#bef264","#fb923c","#c4b5fd","#e2e8f0","#60a5fa","#d6a77a"];
+const COL=Object.fromEntries(NAMES.map((c,i)=>[c,PAL[i%PAL.length]]));
+const LOC={"Bénin":"au Bénin","Burkina Faso":"au Burkina Faso","Côte d'Ivoire":"en Côte d'Ivoire","Ghana":"au Ghana","Mali":"au Mali","Niger":"au Niger","Sénégal":"au Sénégal","Togo":"au Togo"};
+const FEM="#ff4f8b",HOM="#2dd4bf",BAD="#ff6b5e",GOOD="#4ade80";
+const N=D.p[NAMES[0]].a.length,S={on:new Set(NAMES),a:0,b:N-1},Y=i=>D.y0+i;
+const avg=a=>a.reduce((s,v)=>s+v,0)/a.length;
+const fr=(v,s)=>(s&&v>0?"+":"")+v.toLocaleString("fr-FR",{minimumFractionDigits:1,maximumFractionDigits:1}).replace("-","−");
+const sel=()=>NAMES.filter(c=>S.on.has(c)),vals=(c,k)=>D.p[c][k].slice(S.a,S.b+1);
+const nice=(r,k=6)=>[.5,1,2,5,10].find(s=>r/s<=k)||10;
+const ST=["#ffe9c7","#f7a95d","#e5533d","#93201d"].map(h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)));
+const ramp=k=>{k=Math.max(0,Math.min(1,k))*(ST.length-1);const i=Math.min(ST.length-2,Math.floor(k)),f=k-i;return"#"+ST[i].map((v,j)=>Math.round(v+(ST[i+1][j]-v)*f).toString(16).padStart(2,"0")).join("")};
+const lum=h=>(.299*parseInt(h.slice(1,3),16)+.587*parseInt(h.slice(3,5),16)+.114*parseInt(h.slice(5,7),16))/255;
+/* infobulle */
+const tip=$("#tip");
+const showTip=(e,h)=>{tip.innerHTML=h;tip.style.opacity=1;const r=tip.getBoundingClientRect();tip.style.transform=`translate(${Math.max(8,Math.min(e.clientX+16,innerWidth-r.width-8))}px,${Math.min(e.clientY+16,innerHeight-r.height-8)}px)`};
+const hideTip=()=>tip.style.opacity=0;
+/* synthèse */
+let shown=0;
+function count(to){const el=$("#mega"),from=shown,t0=performance.now(),d=REDUCED?0:900;(function f(t){const k=d?Math.max(0,Math.min(1,(t-t0)/d)):1,e=1-Math.pow(1-k,3);el.textContent=fr(from+(to-from)*e)+" %";if(k<1)requestAnimationFrame(f);else shown=to})(t0)}
+function hero(){
+  const L=sel(),last=L.map(c=>D.p[c].a[S.b]),mean=avg(last),iMin=last.indexOf(Math.min(...last)),iMax=last.indexOf(Math.max(...last));
+  const zone=L.length===NAMES.length?"en Afrique de l'Ouest":"dans les pays sélectionnés";
+  $("#synthese").textContent=L.length>1?`En ${Y(S.b)}, ${fr(mean)} % des adultes sont hypertendus en moyenne ${zone}, de ${fr(last[iMin])} % ${LOC[L[iMin]]} à ${fr(last[iMax])} % ${LOC[L[iMax]]}.`:`En ${Y(S.b)}, ${fr(mean)} % des adultes sont hypertendus ${LOC[L[0]]}.`;
+  const g=L.map(c=>D.p[c].f[S.b]-D.p[c].h[S.b]);
+  $("#sexe").textContent=`La prévalence est plus élevée chez les femmes que chez les hommes dans ${g.filter(v=>v>0).length} pays sur ${L.length} ; écart moyen femmes − hommes : ${fr(avg(g),1)} points.`;
+  count(mean);
+}
+function cartes(){
+  $("#cartes").innerHTML=sel().map((c,i)=>{const a=D.p[c].a,d=a[S.b]-a[S.a],z=Math.abs(d)<.05;
+    return`<div class="carte g rv" style="transition-delay:${i*60}ms"><b>${c}</b><div class="v ${z?"":d>0?"mal":"bien"}">${z?"►":d>0?"▲":"▼"} ${fr(d,1)} points</div><small>${z?"Stabilité":d>0?"Augmentation":"Diminution"} <span>depuis ${Y(S.a)}</span></small></div>`}).join("");
+  $$(".rv:not(.in)").forEach(e=>io.observe(e));
+}
+/* graphiques */
+function reveal(r,w){const t0=performance.now(),d=REDUCED?0:1100;(function f(t){const k=d?Math.max(0,Math.min(1,(t-t0)/d)):1;r.setAttribute("width",w*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f)})(t0)}
+let uid=0;
+function lines(el,series,o={}){
+  const w=el.clientWidth||640,h=o.h||380,m={l:46,r:14,t:14,b:30},n=S.b-S.a+1,id="c"+uid++;
+  const all=series.flatMap(s=>s.v);let lo=Math.min(...all),hi=Math.max(...all);const st=nice(hi-lo,8);lo=Math.floor(lo/st)*st;hi=Math.ceil(hi/st)*st;
+  const x=i=>m.l+(n>1?i/(n-1):.5)*(w-m.l-m.r),y=v=>m.t+(1-(v-lo)/(hi-lo))*(h-m.t-m.b),P=v=>v.map((q,i)=>(i?"L":"M")+x(i).toFixed(1)+" "+y(q).toFixed(1)).join("");
+  let g="";for(let t=lo;t<=hi+1e-9;t+=st)g+=`<line x1="${m.l}" x2="${w-m.r}" y1="${y(t)}" y2="${y(t)}" class="gl"/><text x="${m.l-9}" y="${y(t)+4}" class="tk" text-anchor="end">${t.toLocaleString("fr-FR",{maximumFractionDigits:1})}</text>`;
+  const ev=w<520?10:5;for(let i=0;i<n;i++)if(Y(S.a+i)%ev===0)g+=`<text x="${x(i)}" y="${h-8}" class="tk" text-anchor="middle">${Y(S.a+i)}</text>`;
+  let body="";
+  if(o.fill){const [p,q]=o.fill.map(k=>series[k].v);body+=`<path d="${P(p)}${q.map((v,i)=>"L"+x(n-1-i).toFixed(1)+" "+y(q[n-1-i]).toFixed(1)).join("")}Z" fill="rgba(255,79,139,.13)"/>`}
+  body+=series.map(s=>`<path class="ln" data-c="${s.c||""}" d="${P(s.v)}" stroke="${s.col}" stroke-dasharray="${s.dash||""}" style="stroke-width:${o.sw||2.75}px"/>`).join("");
+  el.innerHTML=`<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="${o.aria||"Courbes d'évolution"}"><clipPath id="${id}"><rect x="0" y="-10" width="0" height="${h+20}"/></clipPath>${g}<g clip-path="url(#${id})">${body}</g><line class="cx" y1="${m.t}" y2="${h-m.b}" stroke="rgba(255,255,255,.35)" opacity="0"/><rect class="hit" x="${m.l}" y="${m.t}" width="${w-m.l-m.r}" height="${h-m.t-m.b}" fill="transparent"/></svg>`;
+  reveal(el.querySelector("rect"),w);
+  const hit=el.querySelector(".hit"),cx=el.querySelector(".cx");
+  hit.onmousemove=e=>{const r=hit.getBoundingClientRect(),i=Math.max(0,Math.min(n-1,Math.round((e.clientX-r.left)/r.width*(n-1))));cx.setAttribute("x1",x(i));cx.setAttribute("x2",x(i));cx.setAttribute("opacity",1);
+    showTip(e,`<b>${Y(S.a+i)}</b>`+series.slice().sort((p,q)=>q.v[i]-p.v[i]).map(s=>`<div><span style="display:flex;gap:8px;align-items:center"><i style="background:${s.col}"></i>${s.label}</span><b>${fr(s.v[i])} %</b></div>`).join(""))};
+  hit.onmouseleave=()=>{cx.setAttribute("opacity",0);hideTip()};
+}
+function dots(el,rows,o={}){
+  const w=el.clientWidth||520,rh=46,m={l:w<480?92:122,r:64,t:8,b:34},h=rows.length*rh+m.t+m.b,vs=rows.map(r=>r.v);
+  let lo=Math.min(...vs),hi=Math.max(...vs);const pad=(hi-lo)*.12+.8;lo-=pad;hi+=pad;if(o.zero){lo=Math.min(lo,0);hi=Math.max(hi,0)}
+  const st=nice(hi-lo,5),x=v=>m.l+(v-lo)/(hi-lo)*(w-m.l-m.r);let g="";
+  for(let t=Math.ceil(lo/st)*st;t<=hi;t+=st)g+=`<line x1="${x(t)}" x2="${x(t)}" y1="${m.t}" y2="${h-m.b}" class="${o.zero&&Math.abs(t)<1e-9?"zl":"gl"}"/><text x="${x(t)}" y="${h-10}" class="tk" text-anchor="middle">${t.toLocaleString("fr-FR",{maximumFractionDigits:1}).replace("-","−")}</text>`;
+  rows.forEach((r,i)=>{const y=m.t+rh*(i+.5);g+=`<line class="gd" x1="${m.l}" x2="${w-m.r}" y1="${y}" y2="${y}"/><text x="${m.l-14}" y="${y+5}" text-anchor="end" class="lb">${r.l}</text><circle class="pt" style="animation-delay:${i*70}ms" cx="${x(r.v)}" cy="${y}" r="11" fill="${r.col}"/><text x="${x(r.v)+20}" y="${y+5}" class="vl">${r.t}</text>`});
+  el.innerHTML=`<svg viewBox="0 0 ${w} ${h}" width="${w}" height="${h}" role="img" aria-label="${o.aria||"Graphique à points"}">${g}</svg>`;
+}
+const hl=(box,c)=>box.querySelectorAll(".ln").forEach(p=>p.style.opacity=!c||p.dataset.c===c?1:.12);
+function leg(el,box,L,extra=""){el.innerHTML=L.map(c=>`<span class="lg" data-c="${c}"><i style="background:${COL[c]}"></i>${c}</span>`).join("")+extra;
+  el.onmouseover=e=>hl(box,(e.target.closest("[data-c]")||{dataset:{}}).dataset.c);el.onmouseleave=()=>hl(box)}
+/* carte */
+const LAB={TGO:[-34,78,"end"],BEN:[40,74,"start"]};
+function vue(){
+  const L=sel(),lv=c=>D.p[c].a[S.b],vs=L.map(lv),lo=Math.floor(Math.min(...vs))-1,hi=Math.ceil(Math.max(...vs))+1,col=v=>ramp((v-lo)/(hi-lo));
+  $("#carteTitre").textContent=`Prévalence en ${Y(S.b)} (%)`;
+  $("#map").innerHTML=`<svg viewBox="0 0 520 470" role="img" aria-label="Carte de la prévalence par pays">${NAMES.map(c=>{const m=MAP[D.p[c].i],on=S.on.has(c),f=on?col(lv(c)):"#111a26",o=LAB[D.p[c].i];
+    let t="";if(on){let [tx,ty]=m.c,a="middle",k=lum(f)>.55?"#1b0f0a":"#fff";if(o){t=`<line x1="${tx}" y1="${ty}" x2="${tx+o[0]}" y2="${ty+o[1]-16}" stroke="rgba(255,255,255,.55)"/>`;tx+=o[0];ty+=o[1];a=o[2];k="#fff"}
+      t+=`<text x="${tx}" y="${ty-4}" text-anchor="${a}" class="mn" fill="${k}">${c}</text><text x="${tx}" y="${ty+14}" text-anchor="${a}" class="mv" fill="${k}">${fr(lv(c))}</text>`}
+    return`<path class="mp" data-c="${c}" d="${m.d}" fill="${f}"/>${t}`}).join("")}</svg>`;
+  const mv=$("#map svg"),bb=mv.getBBox();mv.setAttribute("viewBox",`${bb.x-12} ${bb.y-12} ${bb.width+24} ${bb.height+24}`);mv.style.width="100%";mv.style.height="auto";
+  $("#map").onmousemove=e=>{const p=e.target.closest("[data-c]");p&&S.on.has(p.dataset.c)?showTip(e,`<div><b>${p.dataset.c}</b><b>${fr(lv(p.dataset.c))} %</b></div>`):hideTip()};
+  $("#map").onmouseleave=hideTip;
+  $("#barre").style.background=`linear-gradient(90deg,${[0,.2,.4,.6,.8,1].map(k=>ramp(k)).join(",")})`;
+  $("#tks").innerHTML=[0,1,2,3,4].map(k=>`<span>${(lo+(hi-lo)*k/4).toLocaleString("fr-FR",{maximumFractionDigits:1})}</span>`).join("");
+  dots($("#rank"),L.map(c=>({l:c,v:lv(c),col:col(lv(c)),t:fr(lv(c))+" %"})).sort((a,b)=>b.v-a.v),{aria:"Classement des pays par prévalence"});
+}
+function tend(){
+  const L=sel();
+  lines($("#t1"),L.map(c=>({label:c,c,col:COL[c],v:vals(c,"a")})),{h:400,aria:"Évolution de la prévalence par pays"});
+  leg($("#l1"),$("#t1"),L);
+  $("#varTitre").textContent=`Variation entre ${Y(S.a)} et ${Y(S.b)} (points de pourcentage)`;
+  dots($("#t2"),L.map(c=>{const a=D.p[c].a,d=a[S.b]-a[S.a];return{l:c,v:d,col:d>0?BAD:GOOD,t:fr(d,1)}}).sort((a,b)=>b.v-a.v),{zero:1,aria:"Variation de la prévalence par pays"});
+}
+function sexe(){
+  const L=sel(),n=S.b-S.a+1,mean=k=>Array.from({length:n},(_,i)=>avg(L.map(c=>D.p[c][k][S.a+i]))),F=mean("f"),H=mean("h"),f=F[n-1],h=H[n-1];
+  $("#trio").innerHTML=`<div style="color:${FEM}">${fr(f)} %<small>Femmes en ${Y(S.b)}, moyenne des pays</small></div><div style="color:${HOM}">${fr(h)} %<small>Hommes en ${Y(S.b)}, moyenne des pays</small></div><div>${fr(f-h,1)} pt<small>Écart femmes − hommes</small></div>`;
+  lines($("#s1"),[{label:"Hommes",col:HOM,v:H},{label:"Femmes",col:FEM,v:F}],{h:340,sw:4,fill:[1,0],aria:"Évolution de la prévalence selon le sexe, moyenne"});
+  lines($("#s2"),L.flatMap(c=>[{label:c+", femmes",c,col:COL[c],v:vals(c,"f")},{label:c+", hommes",c,col:COL[c],dash:"7 6",v:vals(c,"h")}]),{h:440,aria:"Évolution selon le sexe, pays par pays"});
+  const sv=d=>`<svg viewBox="0 0 34 6" aria-hidden="true"><line x1="1" x2="33" y1="3" y2="3" stroke="#aab4c3" stroke-width="3" stroke-linecap="round" ${d?'stroke-dasharray="6 5"':""}/></svg>`;
+  leg($("#l2"),$("#s2"),L,`<span class="sty">${sv()}Femmes (trait plein)</span><span class="sty">${sv(1)}Hommes (tirets)</span>`);
+}
+function data(){
+  let r="";sel().forEach(c=>{const p=D.p[c];for(let i=S.a;i<=S.b;i++)r+=`<tr><td>${c}</td><td>${Y(i)}</td><td>${fr(p.a[i])}</td><td>${fr(p.f[i])}</td><td>${fr(p.h[i])}</td><td>${fr(p.f[i]-p.h[i],1)}</td></tr>`});
+  $("#tw").innerHTML=`<table><thead><tr><th>Pays</th><th>Année</th><th>Moyenne nationale (%)</th><th>Femmes (%)</th><th>Hommes (%)</th><th>Écart femmes − hommes (points)</th></tr></thead><tbody>${r}</tbody></table>`;
+}
+$("#dl").onclick=()=>{const rows=[["Pays","Année","Moyenne nationale (%)","Femmes (%)","Hommes (%)","Écart femmes − hommes (points)"]];
+  sel().forEach(c=>{const p=D.p[c];for(let i=S.a;i<=S.b;i++)rows.push([c,Y(i),p.a[i],p.f[i],p.h[i],+(p.f[i]-p.h[i]).toFixed(2)])});
+  const t=rows.map(r=>r.map(v=>typeof v==="number"?String(v).replace(".",","):v).join(";")).join("\r\n"),a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob(["\ufeff"+t],{type:"text/csv"}));a.download="hypertension_selection.csv";a.click()};
+/* navigation et filtres */
+let tab="vue";const draw=()=>({vue,tend,sexe,data})[tab]();
+function go(t,scroll){tab=t;$$("nav button").forEach(b=>b.setAttribute("aria-selected",b.dataset.t===t));$$(".panel").forEach(p=>p.hidden=p.id!==t);draw();$("nav button[aria-selected=true]").scrollIntoView({inline:"center",block:"nearest"});if(scroll)$("#panneaux").scrollIntoView({behavior:REDUCED?"auto":"smooth"})}
+$$("nav button").forEach(b=>b.onclick=()=>go(b.dataset.t,true));
+$("#chips").innerHTML=NAMES.map(c=>`<button class="chip" aria-pressed="true" data-c="${c}"><i style="background:${COL[c]}"></i>${c}</button>`).join("");
+$("#chips").onclick=e=>{const b=e.target.closest(".chip");if(!b)return;const c=b.dataset.c;if(S.on.has(c)){if(S.on.size===1)return;S.on.delete(c)}else S.on.add(c);b.setAttribute("aria-pressed",S.on.has(c));refresh()};
+for(const k of["ra","rb"]){const el=$("#"+k);el.max=N-1;el.value=k==="ra"?0:N-1;el.oninput=()=>{let a=+$("#ra").value,b=+$("#rb").value;if(a>b){k==="ra"?(b=a,$("#rb").value=b):(a=b,$("#ra").value=a)}S.a=a;S.b=b;refresh()}}
+function refresh(){$("#la").textContent=Y(S.a);$("#lb").textContent=Y(S.b);hero();cartes();draw()}
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target)}}),{threshold:.12});
+let rt,lw=innerWidth;addEventListener("resize",()=>{if(innerWidth===lw)return;lw=innerWidth;clearTimeout(rt);rt=setTimeout(draw,150)});
+const v=$("#vid");v.addEventListener("loadeddata",()=>v.classList.add("ok"));v.play&&v.play().catch(()=>{});
+refresh();
+</script>
+</body>
+</html>
